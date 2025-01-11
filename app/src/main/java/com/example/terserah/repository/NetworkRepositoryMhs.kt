@@ -7,12 +7,17 @@ import com.google.protobuf.Value
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
 
 class NetworkRepositoryMhs(
     private val firestore: FirebaseFirestore
 ) : RepositoryMhs {
     override suspend fun insertMhs(mahasiswa: Mahasiswa) {
-        TODO("Not yet implemented")
+       try {
+           firestore.collection("Mahasiswa").add(mahasiswa).await()
+       } catch (e:Exception) {
+           throw Exception("Gagal menambah data mahasiswa: ${e.message}")
+       }
     }
 
     override fun getAllMhs(): Flow<List<Mahasiswa>> = callbackFlow {
